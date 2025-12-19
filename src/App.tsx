@@ -1,10 +1,9 @@
 import React from 'react';
 import { Navigation } from './components/Navigation';
 import { HeroMain } from './components/HeroMain';
-import { FeatureCards } from './components/FeatureCards';
+import { ProductFeaturesSection } from './components/ProductFeaturesSection';
 import { AISection } from './components/AISection';
 import { CompaniesSection } from './components/CompaniesSection';
-import { ProductFeaturesSection } from './components/ProductFeaturesSection';
 import { HeroTimeline } from './components/HeroTimeline';
 import { IntegrationsSection } from './components/IntegrationsSection';
 import { TechnicalSection } from './components/TechnicalSection';
@@ -15,16 +14,17 @@ function App() {
       <Navigation />
 
       <main>
-        {/* Section from Project 3 */}
+        {/* Hero */}
         <HeroMain />
-        <FeatureCards />
-        <AISection />
 
-        {/* Section from Project 2 */}
-        <CompaniesSection />
+        {/* What We Build - multicolor expandable cards */}
         <ProductFeaturesSection />
 
-        {/* Section from Project 1 */}
+        {/* How We Help - command palette style */}
+        <AISection />
+        <CompaniesSection />
+
+        {/* Timeline & Technical */}
         <HeroTimeline />
         <IntegrationsSection />
         <TechnicalSection />

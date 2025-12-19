@@ -1,231 +1,506 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ChevronRight, CheckCircle2, Circle } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Zap, ChevronRight, ChevronLeft, ArrowRight, Globe, Bot, Smartphone, Database } from 'lucide-react';
+
+const serviceTypes = [
+  { id: 'webapp', label: 'Web App', icon: Globe, duration: '72 Hours' },
+  { id: 'aibot', label: 'Custom AI Bot', icon: Bot, duration: '7 Days' },
+  { id: 'mobile', label: 'Mobile App', icon: Smartphone, duration: '6 Weeks' },
+  { id: 'crm', label: 'Custom CRM', icon: Database, duration: '8 Weeks' },
+];
+
+// Service-specific card content
+const serviceCardContent = {
+  webapp: {
+    discovery: {
+      duration: 'Day 1',
+      you: ['Share your vision', 'Approve the plan'],
+      haestus: ['Deep-dive session', 'Architecture mapped', 'Development begins'],
+      tagline: 'Let\'s align on the vision.',
+    },
+    build: {
+      duration: '48-72 Hours',
+      you: ['Review live progress', 'Test the beta'],
+      haestus: ['AI-powered development', 'Production deployment', 'Live demo ready'],
+      tagline: '72 hours. Shipped. Done.',
+    },
+    perfect: {
+      duration: 'Days 3-14',
+      you: ['Request changes', 'Launch with confidence'],
+      haestus: ['Iterate on feedback', 'Performance tuning', 'Full handoff'],
+      tagline: 'Polished to perfection.',
+    },
+  },
+  aibot: {
+    discovery: {
+      duration: 'Days 1-2',
+      you: ['Define use cases', 'Provide training data'],
+      haestus: ['Analyze workflows', 'Design bot personality', 'Map integrations'],
+      tagline: 'Understanding your brain.',
+    },
+    build: {
+      duration: 'Days 3-5',
+      you: ['Test conversations', 'Approve responses'],
+      haestus: ['Model training', 'Fine-tuning', 'API integration'],
+      tagline: 'Your AI, learning fast.',
+    },
+    perfect: {
+      duration: 'Days 6-7',
+      you: ['Final testing', 'Go live'],
+      haestus: ['Accuracy tuning', 'Deployment', 'Handoff docs'],
+      tagline: 'Smart and ready to work.',
+    },
+  },
+  mobile: {
+    discovery: {
+      duration: 'Week 1',
+      you: ['Define features', 'Approve designs'],
+      haestus: ['UX research', 'Wireframes', 'Technical spec'],
+      tagline: 'Mapping the experience.',
+    },
+    build: {
+      duration: 'Weeks 2-4',
+      you: ['Review builds', 'Beta testing'],
+      haestus: ['iOS + Android dev', 'Backend APIs', 'TestFlight ready'],
+      tagline: 'Building for both platforms.',
+    },
+    perfect: {
+      duration: 'Weeks 5-6',
+      you: ['Final approval', 'App Store assets'],
+      haestus: ['Bug fixes', 'Store submission', 'Launch support'],
+      tagline: 'Ready for the App Store.',
+    },
+  },
+  crm: {
+    discovery: {
+      duration: 'Weeks 1-2',
+      you: ['Map your processes', 'Define requirements'],
+      haestus: ['Workflow analysis', 'Data modeling', 'Integration planning'],
+      tagline: 'Understanding your business.',
+    },
+    build: {
+      duration: 'Weeks 3-6',
+      you: ['Review modules', 'Test workflows'],
+      haestus: ['Custom modules', 'Data migration', 'Integrations built'],
+      tagline: 'Your system, your way.',
+    },
+    perfect: {
+      duration: 'Weeks 7-8',
+      you: ['Team training', 'Go live'],
+      haestus: ['User training', 'Final polish', 'Ongoing support'],
+      tagline: 'Your team\'s command center.',
+    },
+  },
+};
+
+// Base card structure (colors stay the same)
+const baseCards = [
+  {
+    id: 'discovery',
+    number: '01',
+    title: 'Discovery',
+    color: '#0EA5E9',
+    bg: 'rgba(14, 165, 233, 0.15)',
+    border: 'rgba(14, 165, 233, 0.5)',
+  },
+  {
+    id: 'build',
+    number: '02',
+    title: 'Build & Ship',
+    color: '#A855F7',
+    bg: 'rgba(168, 85, 247, 0.15)',
+    border: 'rgba(168, 85, 247, 0.5)',
+  },
+  {
+    id: 'perfect',
+    number: '03',
+    title: 'Perfect',
+    color: '#10B981',
+    bg: 'rgba(16, 185, 129, 0.15)',
+    border: 'rgba(16, 185, 129, 0.5)',
+  },
+  {
+    id: 'intelligence',
+    number: '04',
+    title: 'Intelligence',
+    color: '#FFFFFF',
+    bg: 'rgba(255, 255, 255, 0.08)',
+    border: 'rgba(255, 255, 255, 0.3)',
+    isWhite: true,
+    headline: 'We build intelligence layers.',
+    subtext: 'Not dashboards. Not tools. Systems that think.',
+    philosophy: 'Your business runs on data. We make it run smarter.',
+  },
+];
+
 export function HeroTimeline() {
-  return <section className="relative min-h-screen pt-32 pb-20 overflow-hidden flex flex-col items-center">
-      {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-purple-900/20 blur-[120px] rounded-full pointer-events-none" />
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [direction, setDirection] = useState(1); // 1 = forward, -1 = backward
+  const [selectedService, setSelectedService] = useState(serviceTypes[0]);
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-20">
-          {/* Badge */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5
-        }} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-8">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-xs font-medium text-purple-300 uppercase tracking-wider">
-              Project and long-term planning
-            </span>
-            <ChevronRight size={12} className="text-gray-500" />
-          </motion.div>
+  // Build dynamic cards based on selected service
+  const cards = baseCards.map((baseCard) => {
+    if (baseCard.isWhite) return baseCard;
 
-          {/* Headline */}
-          <motion.h1 initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.1
-        }} className="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6">
-            Set the product direction
-          </motion.h1>
+    const serviceContent = serviceCardContent[selectedService.id as keyof typeof serviceCardContent];
+    const cardContent = serviceContent[baseCard.id as keyof typeof serviceContent];
 
-          {/* Subheading */}
-          <motion.p initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.2
-        }} className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Align your team around a unified product timeline. Plan, manage, and
-            track all product initiatives with Linear's visual planning tools.
-          </motion.p>
-        </div>
+    return {
+      ...baseCard,
+      duration: cardContent.duration,
+      you: cardContent.you,
+      haestus: cardContent.haestus,
+      tagline: cardContent.tagline,
+    };
+  });
 
-        {/* 3D Visualization Container */}
-        <div className="relative h-[600px] w-full perspective-[2000px] group">
-          <motion.div initial={{
-          opacity: 0,
-          rotateX: 20,
-          scale: 0.9
-        }} animate={{
-          opacity: 1,
-          rotateX: 25,
-          scale: 1
-        }} transition={{
-          duration: 1,
-          delay: 0.3
-        }} className="relative w-full h-full transform-style-3d transition-transform duration-700 ease-out group-hover:rotate-x-[20deg]" style={{
-          transform: 'rotateX(25deg) rotateY(0deg) rotateZ(-5deg)'
-        }}>
-            {/* Timeline Grid Lines */}
-            <div className="absolute inset-0 grid grid-cols-12 gap-4 opacity-10 pointer-events-none">
-              {[...Array(12)].map((_, i) => <div key={i} className="h-full border-r border-white/20" />)}
-            </div>
+  // Reset to first card when service changes
+  const handleServiceChange = (service: typeof serviceTypes[0]) => {
+    setSelectedService(service);
+    setCurrentIndex(0);
+    setDirection(1);
+  };
 
-            {/* Date Markers */}
-            <div className="absolute top-0 left-1/4 text-gray-500 text-sm font-mono transform -translate-x-1/2">
-              AUG 3
-            </div>
-            <div className="absolute top-0 left-1/2 text-gray-500 text-sm font-mono transform -translate-x-1/2 bg-white/10 px-2 py-1 rounded">
-              AUG 22
-            </div>
-            <div className="absolute top-0 left-3/4 text-gray-500 text-sm font-mono transform -translate-x-1/2">
-              SEP
-            </div>
+  const goNext = () => {
+    if (currentIndex < cards.length - 1) {
+      setDirection(1);
+      const nextIndex = currentIndex + 1;
+      setCurrentIndex(nextIndex);
 
-            {/* Card 1: Realtime Inference */}
-            <motion.div className="absolute top-20 left-[15%] w-[400px] bg-[#1a1a1a] border border-white/10 rounded-lg p-4 shadow-2xl" initial={{
-            z: 0
-          }} whileHover={{
-            z: 20,
-            scale: 1.05
-          }} style={{
-            transform: 'translateZ(0px)'
-          }}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-6 h-6 rounded bg-purple-500/20 flex items-center justify-center">
-                  <div className="w-3 h-3 bg-purple-500 rotate-45" />
-                </div>
-                <span className="text-gray-300 font-medium">
-                  Realtime inference
-                </span>
-              </div>
-              <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className="h-full w-2/3 bg-purple-500" />
-              </div>
-            </motion.div>
+      if (nextIndex === cards.length - 1) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 1500);
+      }
+    }
+  };
 
-            {/* Card 2: Beta Launch */}
-            <motion.div className="absolute top-40 left-[35%] w-[500px] bg-[#1a1a1a] border border-white/10 rounded-lg p-4 shadow-2xl" initial={{
-            z: 20
-          }} whileHover={{
-            z: 40,
-            scale: 1.05
-          }} style={{
-            transform: 'translateZ(20px)'
-          }}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-6 h-6 rounded bg-green-500/20 flex items-center justify-center">
-                  <div className="w-3 h-3 border-2 border-green-500 rounded-full" />
-                </div>
-                <span className="text-gray-300 font-medium">Beta Launch</span>
-                <span className="ml-auto text-xs text-gray-500">Q3 2024</span>
-              </div>
-              <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className="h-full w-1/2 bg-green-500" />
-              </div>
-            </motion.div>
+  const goPrev = () => {
+    if (currentIndex > 0) {
+      setDirection(-1);
+      setCurrentIndex(currentIndex - 1);
+    }
+  };
 
-            {/* Card 3: RLHF Fine tuning */}
-            <motion.div className="absolute top-64 left-[45%] w-[450px] bg-[#1a1a1a] border border-white/10 rounded-lg p-4 shadow-2xl" initial={{
-            z: 40
-          }} whileHover={{
-            z: 60,
-            scale: 1.05
-          }} style={{
-            transform: 'translateZ(40px)'
-          }}>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-6 h-6 rounded bg-blue-500/20 flex items-center justify-center">
-                  <div className="w-3 h-3 bg-blue-500 rounded-sm" />
-                </div>
-                <span className="text-gray-300 font-medium">
-                  RLHF fine tuning
-                </span>
-              </div>
-              <div className="h-1 w-full bg-gray-800 rounded-full overflow-hidden">
-                <div className="h-full w-3/4 bg-blue-500" />
-              </div>
-            </motion.div>
+  const isLastCard = currentIndex === cards.length - 1;
 
-            {/* Connecting Lines (SVG) */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
-              <line x1="25%" y1="15%" x2="25%" y2="80%" stroke="white" strokeDasharray="4 4" />
-              <line x1="50%" y1="10%" x2="50%" y2="90%" stroke="white" strokeDasharray="4 4" />
-            </svg>
-          </motion.div>
-        </div>
+  // Calculate card positions in the fan
+  const getCardStyle = (index: number) => {
+    const relativeIndex = index - currentIndex;
 
-        {/* Bottom Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-20 max-w-5xl mx-auto">
-          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
-            <h3 className="text-xl font-semibold text-white mb-2">
-              Manage projects end-to-end
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Consolidate specs, milestones, tasks, and other documentation in
-              one centralized location.
-            </p>
+    // Cards behind (to the right in the fan)
+    if (relativeIndex > 0) {
+      return {
+        x: relativeIndex * 25,
+        y: relativeIndex * 4,
+        rotate: relativeIndex * 3,
+        scale: 1 - relativeIndex * 0.02,
+        opacity: Math.max(0.3, 1 - relativeIndex * 0.25),
+        zIndex: cards.length - relativeIndex,
+      };
+    }
 
-            {/* Mini UI Mockup */}
-            <div className="bg-[#0d0d0d] rounded-lg p-4 border border-white/10">
-              <div className="text-sm text-white font-medium mb-3">
-                Project Overview
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Properties</span>
-                  <span className="text-yellow-500 flex items-center gap-1">
-                    ● In Progress
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Resources</span>
-                  <span className="text-purple-400 flex items-center gap-1">
-                    ❖ Exploration
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-500">Milestones</span>
-                  <span className="text-blue-400 flex items-center gap-1">
-                    ♦ Design Review
-                  </span>
-                </div>
-              </div>
-            </div>
+    // Current card (front)
+    if (relativeIndex === 0) {
+      return {
+        x: 0,
+        y: 0,
+        rotate: 0,
+        scale: 1,
+        opacity: 1,
+        zIndex: cards.length,
+      };
+    }
+
+    // Cards that went to back (already viewed)
+    return {
+      x: -30 + relativeIndex * 10,
+      y: 10,
+      rotate: -5,
+      scale: 0.95,
+      opacity: 0,
+      zIndex: 0,
+    };
+  };
+
+  return (
+    <section className="py-32 bg-black relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)]" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6">
+            <Zap className="w-4 h-4 text-white" />
+            <span className="text-sm font-medium text-gray-400 uppercase tracking-wider">The Age of Execution</span>
           </div>
 
-          <div className="p-8 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-colors">
-            <h3 className="text-xl font-semibold text-white mb-2">
-              Project updates
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Communicate progress and project health with built-in project
-              updates.
-            </p>
-
-            {/* Mini UI Mockup */}
-            <div className="bg-[#0d0d0d] rounded-lg p-4 border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-1 h-full bg-green-500" />
-              <div className="pl-3">
-                <div className="flex items-center gap-2 mb-1">
-                  <CheckCircle2 size={14} className="text-green-500" />
-                  <span className="text-green-500 text-xs font-medium">
-                    On track
-                  </span>
-                </div>
-                <div className="text-white text-sm font-medium">
-                  We are ready to launch next Thursday
-                </div>
-                <div className="text-gray-500 text-xs mt-1">Sep 8</div>
-              </div>
-            </div>
+          {/* Service Type Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+            {serviceTypes.map((service) => {
+              const Icon = service.icon;
+              const isSelected = selectedService.id === service.id;
+              return (
+                <button
+                  key={service.id}
+                  onClick={() => handleServiceChange(service)}
+                  className={`group flex items-center gap-2 px-4 py-2 rounded-lg border transition-all duration-200 ${
+                    isSelected
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-gray-400 border-white/10 hover:border-white/30 hover:text-white'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isSelected ? 'text-black' : 'text-gray-500 group-hover:text-white'}`} />
+                  <span className="text-sm font-medium">{service.label}</span>
+                </button>
+              );
+            })}
           </div>
+
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-4 tracking-tight">
+            From Kickoff to Production:{' '}
+            <motion.span
+              key={selectedService.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-white"
+            >
+              {selectedService.duration}
+            </motion.span>
+          </h2>
+
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
+            Other agencies bill by the hour. We bill by the outcome.
+            <span className="text-gray-600 text-sm ml-2">* Scope dependent</span>
+          </p>
+        </motion.div>
+
+        {/* Card Deck */}
+        <div className="max-w-xl mx-auto">
+          {/* Progress indicators */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {cards.map((card, index) => (
+              <div
+                key={card.id}
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  index === currentIndex ? 'w-8' : index < currentIndex ? 'w-4' : 'w-2'
+                }`}
+                style={{
+                  backgroundColor: index <= currentIndex ? card.color : 'rgba(255,255,255,0.2)',
+                  opacity: index <= currentIndex ? 1 : 0.4,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Fanned Card Stack */}
+          <div className="relative h-[420px] mx-auto" style={{ width: '100%', maxWidth: '480px' }}>
+            <AnimatePresence mode="popLayout">
+              {cards.map((card, index) => {
+                const style = getCardStyle(index);
+                const isVisible = index >= currentIndex - 1 && index <= currentIndex + 3;
+
+                if (!isVisible) return null;
+
+                return (
+                  <motion.div
+                    key={card.id}
+                    initial={direction === 1
+                      ? { x: 100, y: 20, rotate: 10, scale: 0.9, opacity: 0 }
+                      : { x: -100, y: 0, rotate: -10, scale: 0.95, opacity: 0 }
+                    }
+                    animate={{
+                      x: style.x,
+                      y: style.y,
+                      rotate: style.rotate,
+                      scale: style.scale,
+                      opacity: style.opacity,
+                    }}
+                    exit={direction === 1
+                      ? { x: -150, y: 20, rotate: -15, scale: 0.9, opacity: 0 }
+                      : { x: 150, y: 20, rotate: 15, scale: 0.9, opacity: 0 }
+                    }
+                    transition={{
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 30,
+                      mass: 0.8,
+                    }}
+                    className="absolute inset-0 cursor-pointer"
+                    style={{
+                      zIndex: style.zIndex,
+                      transformOrigin: 'center bottom',
+                    }}
+                    onClick={() => {
+                      if (index === currentIndex + 1) goNext();
+                      if (index === currentIndex - 1) goPrev();
+                    }}
+                  >
+                    <motion.div
+                      className="w-full h-full rounded-2xl border-2 p-8 flex flex-col shadow-2xl"
+                      animate={{
+                        boxShadow: card.isWhite && showConfetti
+                          ? [
+                              '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.3)',
+                              '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 30px 8px rgba(255,255,255,0.4)',
+                              '0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.3)',
+                            ]
+                          : index === currentIndex
+                            ? `0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px ${card.border}`
+                            : '0 10px 30px -10px rgba(0,0,0,0.3)',
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        ease: 'easeOut',
+                      }}
+                      style={{
+                        backgroundColor: card.isWhite ? '#0a0a0b' : '#111113',
+                        borderColor: card.isWhite && showConfetti ? 'rgba(255,255,255,0.8)' : card.border,
+                      }}
+                    >
+                      {!card.isWhite ? (
+                        // Regular step card
+                        <>
+                          <div className="flex items-start justify-between mb-6">
+                            <span
+                              className="text-6xl font-bold"
+                              style={{ color: card.color }}
+                            >
+                              {card.number}
+                            </span>
+                            <span
+                              className="text-xs px-3 py-1.5 rounded-full font-medium"
+                              style={{
+                                backgroundColor: card.bg,
+                                color: card.color,
+                                border: `1px solid ${card.border}`,
+                              }}
+                            >
+                              {card.duration}
+                            </span>
+                          </div>
+
+                          <h3 className="text-2xl font-semibold text-white mb-6">
+                            {card.title}
+                          </h3>
+
+                          <div className="grid grid-cols-2 gap-6 flex-1">
+                            <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="w-2 h-2 rounded-full bg-white/50" />
+                                <span className="text-xs font-medium text-white/50 uppercase tracking-wider">You</span>
+                              </div>
+                              <ul className="space-y-2">
+                                {card.you.map((item) => (
+                                  <li key={item} className="text-sm text-gray-400">
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <div className="flex items-center gap-2 mb-3">
+                                <div
+                                  className="w-2 h-2 rounded-full"
+                                  style={{ backgroundColor: card.color }}
+                                />
+                                <span
+                                  className="text-xs font-medium uppercase tracking-wider"
+                                  style={{ color: card.color }}
+                                >
+                                  Haestus
+                                </span>
+                              </div>
+                              <ul className="space-y-2">
+                                {card.haestus.map((item) => (
+                                  <li key={item} className="text-sm text-gray-400">
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+
+                          <div className="pt-6 border-t border-white/10 mt-auto">
+                            <span
+                              className="text-sm font-medium"
+                              style={{ color: card.color }}
+                            >
+                              {card.tagline}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        // White philosophy card - simplified content, CTA moved to nav
+                        <div className="flex flex-col items-center justify-center h-full text-center">
+                          <span className="text-xs px-3 py-1.5 rounded-full font-medium bg-white/10 text-white/70 border border-white/20 mb-6 inline-block">
+                            {card.duration}
+                          </span>
+
+                          <h3 className="text-3xl md:text-4xl font-semibold text-white mb-4">
+                            {card.headline}
+                          </h3>
+
+                          <p className="text-lg text-gray-400 mb-2">
+                            {card.subtext}
+                          </p>
+
+                          <p className="text-gray-500">
+                            {card.philosophy}
+                          </p>
+                        </div>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation - always shows Back/Next, plus Let's Build on last card */}
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <button
+              onClick={goPrev}
+              disabled={currentIndex === 0}
+              className={`flex items-center gap-2 px-5 py-3 rounded-lg border font-medium transition-all duration-200 ${
+                currentIndex === 0
+                  ? 'border-white/5 text-gray-700 cursor-not-allowed'
+                  : 'border-white/20 text-white hover:bg-white/5'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+
+            {!isLastCard ? (
+              <button
+                onClick={goNext}
+                className="group flex items-center gap-2 px-5 py-3 rounded-lg bg-white text-black font-medium hover:bg-gray-100 transition-colors"
+              >
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            ) : (
+              <button className="group flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-black font-semibold hover:bg-gray-100 transition-colors">
+                <span>Let's Build</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            )}
+          </div>
+
+          {/* Step counter */}
+          <p className="text-center text-gray-600 text-sm mt-4">
+            {currentIndex + 1} of {cards.length}
+          </p>
         </div>
+
       </div>
-    </section>;
+    </section>
+  );
 }
