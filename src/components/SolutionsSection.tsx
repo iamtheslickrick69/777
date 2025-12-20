@@ -509,34 +509,38 @@ export function SolutionsSection() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
                   onClick={() => setSelectedFeature(null)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full border border-[#404040] flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all duration-200"
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full border border-[#404040] flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all duration-200 group/close"
                 >
-                  <X className="w-3.5 h-3.5 text-[#8b8b8b] hover:text-white" />
+                  <X className="w-3.5 h-3.5 text-[#8b8b8b] group-hover/close:text-white transition-colors" />
                 </motion.button>
 
-                {features.find((f) => f.id === selectedFeature) && (
-                  <>
-                    <motion.div
-                      layoutId={`illustration-${selectedFeature}`}
-                      className="relative w-full h-32 flex items-center justify-center mb-4"
-                    >
-                      {features.find((f) => f.id === selectedFeature)?.illustration}
-                    </motion.div>
+                {(() => {
+                  const feature = features.find((f) => f.id === selectedFeature);
+                  if (!feature) return null;
 
-                    <div className="mb-4">
-                      <motion.h2
-                        layoutId={`title-${selectedFeature}`}
-                        className="text-2xl tracking-tight font-semibold leading-tight"
-                        transition={{
-                          type: "spring",
-                          stiffness: 120,
-                          damping: 20,
-                          duration: 1.2,
-                        }}
+                  return (
+                    <>
+                      <motion.div
+                        layoutId={`illustration-${selectedFeature}`}
+                        className="relative w-full h-32 flex items-center justify-center mb-4"
                       >
-                        {features.find((f) => f.id === selectedFeature)?.title}
-                      </motion.h2>
-                    </div>
+                        {feature.illustration}
+                      </motion.div>
+
+                      <div className="mb-4">
+                        <motion.h2
+                          layoutId={`title-${selectedFeature}`}
+                          className="text-2xl tracking-tight font-semibold leading-tight"
+                          transition={{
+                            type: "spring",
+                            stiffness: 120,
+                            damping: 20,
+                            duration: 1.2,
+                          }}
+                        >
+                          {feature.title}
+                        </motion.h2>
+                      </div>
 
                     {/* Additional content that appears only in modal */}
                     <motion.div
@@ -547,19 +551,19 @@ export function SolutionsSection() {
                       className="space-y-4 text-left"
                     >
                       {/* Intro */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.intro && (
+                      {feature.fullContent.intro && (
                         <p className="text-white text-sm leading-relaxed">
-                          {features.find((f) => f.id === selectedFeature)?.fullContent.intro}
+                          {feature.fullContent.intro}
                         </p>
                       )}
 
                       {/* Timeline (Web Apps & Mobile Apps) */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.timeline && (
+                      {feature.fullContent.timeline && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <div className="space-y-2">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.timeline.map((item: any, idx: number) => (
+                            {feature.fullContent.timeline.map((item: any, idx: number) => (
                               <div key={idx} className="flex items-start gap-3">
-                                <span className={`text-xs font-semibold ${getAccentColorClasses(features.find((f) => f.id === selectedFeature)?.accentColor || 'white')} text-black px-2 py-0.5 rounded`}>
+                                <span className={`text-xs font-semibold ${getAccentColorClasses(feature.accentColor || 'white')} text-black px-2 py-0.5 rounded`}>
                                   {item.step || item.week}
                                 </span>
                                 <span className="text-[#8b8b8b] text-xs">
@@ -572,12 +576,12 @@ export function SolutionsSection() {
                       )}
 
                       {/* Process (SEO) */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.process && (
+                      {feature.fullContent.process && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <ol className="space-y-1.5">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.process.map((step: string, idx: number) => (
+                            {feature.fullContent.process.map((step: string, idx: number) => (
                               <li key={idx} className="flex items-start gap-2 text-[#8b8b8b] text-xs">
-                                <span className={`${getAccentColorClasses(features.find((f) => f.id === selectedFeature)?.accentColor || 'white')} text-black font-bold w-4 h-4 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5`}>
+                                <span className={`${getAccentColorClasses(feature.accentColor || 'white')} text-black font-bold w-4 h-4 rounded-full flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5`}>
                                   {idx + 1}
                                 </span>
                                 {step}
@@ -588,13 +592,13 @@ export function SolutionsSection() {
                       )}
 
                       {/* Flow (AI Bots) */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.flow && (
+                      {feature.fullContent.flow && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <div className="space-y-2">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.flow.map((step: string, idx: number) => (
+                            {feature.fullContent.flow.map((step: string, idx: number) => (
                               <div key={idx} className="flex items-center gap-2">
                                 <span className="text-[#8b8b8b] text-xs">{step}</span>
-                                {idx < (features.find((f) => f.id === selectedFeature)?.fullContent.flow.length || 0) - 1 && (
+                                {idx < (feature.fullContent.flow?.length || 0) - 1 && (
                                   <span className="text-[#666666]">↓</span>
                                 )}
                               </div>
@@ -604,11 +608,11 @@ export function SolutionsSection() {
                       )}
 
                       {/* Workflows (API Integrations) */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.workflows && (
+                      {feature.fullContent.workflows && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <p className="text-white text-xs font-semibold mb-2">Example Workflows:</p>
                           <div className="space-y-1.5">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.workflows.map((workflow: string, idx: number) => (
+                            {feature.fullContent.workflows.map((workflow: string, idx: number) => (
                               <div key={idx} className="text-[#8b8b8b] text-xs">
                                 {workflow}
                               </div>
@@ -618,10 +622,10 @@ export function SolutionsSection() {
                       )}
 
                       {/* Optimization (Payment Systems) */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.optimization && (
+                      {feature.fullContent.optimization && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <div className="space-y-1.5">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.optimization.map((line: string, idx: number) => (
+                            {feature.fullContent.optimization.map((line: string, idx: number) => (
                               <div key={idx} className="text-[#8b8b8b] text-xs">
                                 {line}
                               </div>
@@ -631,13 +635,13 @@ export function SolutionsSection() {
                       )}
 
                       {/* What's Included */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.included && (
+                      {feature.fullContent.included && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <p className="text-white text-xs font-semibold mb-2">What's Included:</p>
                           <ul className="space-y-1">
-                            {features.find((f) => f.id === selectedFeature)?.fullContent.included.map((item: string, idx: number) => (
+                            {feature.fullContent.included.map((item: string, idx: number) => (
                               <li key={idx} className="flex items-center gap-2 text-[#8b8b8b] text-xs">
-                                <span className={`w-1 h-1 rounded-full ${getAccentColorClasses(features.find((f) => f.id === selectedFeature)?.accentColor || 'white')}`} />
+                                <span className={`w-1 h-1 rounded-full ${getAccentColorClasses(feature.accentColor || 'white')}`} />
                                 {item}
                               </li>
                             ))}
@@ -646,25 +650,26 @@ export function SolutionsSection() {
                       )}
 
                       {/* Timeframe */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.timeframe && (
+                      {feature.fullContent.timeframe && (
                         <div className="border-t border-white/5 pt-3">
                           <p className="text-[#8b8b8b] text-xs">
-                            <span className="text-white font-semibold">Timeline:</span> {features.find((f) => f.id === selectedFeature)?.fullContent.timeframe}
+                            <span className="text-white font-semibold">Timeline:</span> {feature.fullContent.timeframe}
                           </p>
                         </div>
                       )}
 
                       {/* Real Example */}
-                      {features.find((f) => f.id === selectedFeature)?.fullContent.example && (
+                      {feature.fullContent.example && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <p className="text-[#8b8b8b] text-xs italic">
-                            "{features.find((f) => f.id === selectedFeature)?.fullContent.example}"
+                            "{feature.fullContent.example}"
                           </p>
                         </div>
                       )}
                     </motion.div>
                   </>
-                )}
+                  )
+                })()}
               </motion.div>
             </div>
           </>
