@@ -415,10 +415,12 @@ export function PortfolioCarousel({ onAtlasClick }: PortfolioCarouselProps = {})
                       transform: `translateZ(${translateZ}px) translateY(${translateY}px) scale(${Math.max(0.7, scale)})`,
                       zIndex: Math.round((visibleCards.length - Math.abs(distanceFromActive)) * 10),
                       transition: 'transform 0.15s ease-out',
-                      pointerEvents: Math.abs(distanceFromActive) < 0.5 ? 'auto' : 'none',
+                      pointerEvents: Math.abs(distanceFromActive) < 0.3 ? 'auto' : 'none',
+                      cursor: Math.abs(distanceFromActive) < 0.3 ? 'pointer' : 'default',
                     }}
-                    onClick={() => {
-                      if (Math.abs(distanceFromActive) < 0.5) {
+                    onClick={(e) => {
+                      if (Math.abs(distanceFromActive) < 0.3) {
+                        e.stopPropagation()
                         handleCardClick(index)
                       }
                     }}

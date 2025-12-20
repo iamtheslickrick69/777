@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Globe, Database, Smartphone, Bot } from 'lucide-react';
+import { Check, Globe, Database, Smartphone, Bot, X } from 'lucide-react';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
 
 const oldWay = [
@@ -58,7 +58,7 @@ const services = [
 
 export function HeroMain() {
   const [activeTab, setActiveTab] = useState<'old' | 'new'>('new');
-  const [activeService, setActiveService] = useState(services[0]);
+  const [showMoreServices, setShowMoreServices] = useState(false);
 
   const scrollToWork = () => {
     const workSection = document.getElementById('work');
@@ -201,91 +201,136 @@ export function HeroMain() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="lg:pl-10"
           >
-            {/* Vertical Tabs + Content */}
-            <div className="flex gap-6 mb-6">
-              {/* Tab List */}
-              <div className="flex flex-col gap-1">
-                {services.map((service) => {
-                  const Icon = service.icon;
-                  const isActive = activeService.id === service.id;
-                  return (
-                    <button
-                      key={service.id}
-                      onClick={() => setActiveService(service)}
-                      className={`flex items-center gap-3 px-5 py-3.5 rounded-lg text-left transition-all duration-200 ${
-                        isActive
-                          ? 'bg-white/[0.08] border-l-2'
-                          : 'hover:bg-white/[0.02] border-l-2 border-transparent'
-                      }`}
-                      style={{ borderColor: isActive ? service.color : 'transparent' }}
-                    >
-                      <Icon
-                        className="w-5 h-5"
-                        style={{ color: isActive ? service.color : '#6b7280' }}
-                      />
-                      <span className={`text-base font-medium ${isActive ? 'text-white' : 'text-gray-500'}`}>
-                        {service.label}
-                      </span>
-                    </button>
-                  );
-                })}
+            {/* Two Hero Service Cards */}
+            <div className="grid grid-cols-2 gap-4 mb-4 max-w-2xl mx-auto">
+              {/* Web Apps Card */}
+              <div className="bg-[#1a1a1a]/50 border border-[rgba(255,255,255,0.03)] rounded-[20px] p-6 hover:bg-[#1f1f1f]/70 hover:border-white/10 transition-all">
+                <Globe className="w-7 h-7 mb-3" style={{ color: services[0].color }} />
+                <h3 className="text-base font-semibold text-white mb-3">{services[0].label}</h3>
+                <div className="space-y-2 mb-4">
+                  {services[0].features.slice(0, 3).map((feature, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[#8b8b8b] text-xs">
+                      <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: services[0].color }} />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[#666666] text-xs italic leading-relaxed">{services[0].proof}</p>
               </div>
 
-              {/* Content Panel */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeService.id}
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex-1 bg-white/[0.02] border border-white/10 rounded-xl p-8 min-w-[280px] relative"
-                >
-                  {/* Subtle glow effect */}
-                  <div
-                    className="absolute -inset-1 rounded-xl blur-xl opacity-15 -z-10 transition-colors duration-300"
-                    style={{ backgroundColor: activeService.color }}
-                  />
+              {/* AI Agents Card */}
+              <div className="bg-[#1a1a1a]/50 border border-[rgba(255,255,255,0.03)] rounded-[20px] p-6 hover:bg-[#1f1f1f]/70 hover:border-white/10 transition-all">
+                <Bot className="w-7 h-7 mb-3" style={{ color: services[3].color }} />
+                <h3 className="text-base font-semibold text-white mb-3">{services[3].label}</h3>
+                <div className="space-y-2 mb-4">
+                  {services[3].features.slice(0, 3).map((feature, idx) => (
+                    <div key={idx} className="flex items-center gap-2 text-[#8b8b8b] text-xs">
+                      <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: services[3].color }} />
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[#666666] text-xs italic leading-relaxed">{services[3].proof}</p>
+              </div>
+            </div>
 
-                  <h3
-                    className="text-xl font-semibold mb-5"
-                    style={{ color: activeService.color }}
-                  >
-                    {activeService.headline}
-                  </h3>
-
-                  <div className="space-y-3 mb-6">
-                    {activeService.features.map((feature) => (
-                      <div key={feature} className="flex items-center gap-3 text-sm text-gray-400">
-                        <span
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: activeService.color }}
-                        />
-                        {feature}
-                      </div>
-                    ))}
-                  </div>
-
-                  <p className="text-sm text-gray-600 italic pt-2">{activeService.proof}</p>
-                </motion.div>
-              </AnimatePresence>
+            {/* Data & Mobile Button */}
+            <div className="flex justify-center mb-5">
+              <button
+                onClick={() => setShowMoreServices(true)}
+                className="px-6 py-2.5 rounded-lg border border-[#555555] text-[#a8a8a8] text-sm font-medium hover:bg-white/10 hover:border-white/30 hover:text-white transition-all"
+              >
+                Data & Mobile →
+              </button>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex gap-3 max-w-md">
+            <div className="flex gap-4 max-w-2xl mx-auto">
               <button
                 onClick={scrollToWork}
-                className="flex-1 px-6 py-3 rounded-xl border border-white/20 text-white text-base font-medium hover:bg-white/5 transition-colors"
+                className="flex-1 px-6 py-3 rounded-lg border border-[#404040] text-white text-sm font-medium hover:bg-white/10 hover:border-white/20 transition-colors"
               >
                 See Our Work
               </button>
               <button
                 onClick={scrollToContact}
-                className="flex-1 px-6 py-3 rounded-xl bg-white text-black text-base font-medium hover:bg-gray-100 transition-colors"
+                className="flex-1 px-6 py-3 rounded-lg bg-white text-black text-sm font-medium hover:bg-gray-100 transition-colors"
               >
                 Connect
               </button>
             </div>
+
+            {/* Data & Mobile Modal */}
+            <AnimatePresence>
+              {showMoreServices && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="fixed inset-0 bg-[#0d0d0d]/95 backdrop-blur-sm z-40"
+                    onClick={() => setShowMoreServices(false)}
+                  />
+
+                  <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    onClick={() => setShowMoreServices(false)}
+                  >
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.3 }}
+                      className="bg-[#1a1a1a] rounded-2xl p-6 max-w-2xl w-full border border-[#2a2a2a] relative"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Close button */}
+                      <button
+                        onClick={() => setShowMoreServices(false)}
+                        className="absolute top-4 right-4 w-8 h-8 rounded-full border border-[#404040] flex items-center justify-center hover:bg-white/10 hover:border-white/20 transition-all"
+                      >
+                        <X className="w-3.5 h-3.5 text-[#8b8b8b] hover:text-white" />
+                      </button>
+
+                      <h2 className="text-xl font-semibold text-white mb-6">More Services</h2>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        {/* Data Card */}
+                        <div className="bg-[#0d0d0d]/50 border border-white/5 rounded-lg p-4">
+                          <Database className="w-8 h-8 mb-3" style={{ color: services[1].color }} />
+                          <h3 className="text-base font-semibold text-white mb-2">{services[1].headline}</h3>
+                          <div className="space-y-1.5 mb-3">
+                            {services[1].features.map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-[#8b8b8b] text-xs">
+                                <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: services[1].color }} />
+                                {feature}
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-[#666666] text-[10px] italic">{services[1].proof}</p>
+                        </div>
+
+                        {/* Mobile Card */}
+                        <div className="bg-[#0d0d0d]/50 border border-white/5 rounded-lg p-4">
+                          <Smartphone className="w-8 h-8 mb-3" style={{ color: services[2].color }} />
+                          <h3 className="text-base font-semibold text-white mb-2">{services[2].headline}</h3>
+                          <div className="space-y-1.5 mb-3">
+                            {services[2].features.map((feature, idx) => (
+                              <div key={idx} className="flex items-center gap-2 text-[#8b8b8b] text-xs">
+                                <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ backgroundColor: services[2].color }} />
+                                {feature}
+                              </div>
+                            ))}
+                          </div>
+                          <p className="text-[#666666] text-[10px] italic">{services[2].proof}</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </div>
+                </>
+              )}
+            </AnimatePresence>
           </motion.div>
         </div>
 

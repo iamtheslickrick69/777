@@ -87,17 +87,18 @@ export function BlogModal({ isOpen, onClose, title, content, category, readTime 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm"
             onClick={onClose}
           />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            transition={{ type: "spring", duration: 0.5, bounce: 0.1 }}
-            className="fixed left-1/2 top-1/2 z-[200] flex h-[85vh] w-[90vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.1 }}
+              className="flex h-full max-h-[85vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="absolute left-0 right-0 top-0 z-10 h-1 bg-zinc-800">
               <motion.div
                 className="h-full bg-white"
@@ -169,7 +170,8 @@ export function BlogModal({ isOpen, onClose, title, content, category, readTime 
                 />
               </article>
             </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

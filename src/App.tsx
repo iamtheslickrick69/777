@@ -4,13 +4,12 @@ import { HeroMain } from './components/HeroMain';
 import { AISection } from './components/AISection';
 import { SolutionsSection } from './components/SolutionsSection';
 import { CompaniesSection } from './components/CompaniesSection';
-import { PortfolioCarousel } from './components/PortfolioCarousel';
 import { HeroTimeline } from './components/HeroTimeline';
-import { TestimonialsSection } from './components/TestimonialsSection';
 import { TechStackSection } from './components/TechStackSection';
 import { ContactSection } from './components/ContactSection';
 import { AtlasModal } from './components/AtlasModal';
 import { BlogCardStack } from './components/BlogCardStack';
+import { NewClientsCardStack } from './components/NewClientsCardStack';
 import { AboutSection } from './components/AboutSection';
 import { usePreloadImages } from './hooks/usePreloadImages';
 
@@ -49,18 +48,25 @@ function App() {
 
         <CompaniesSection />
 
-        {/* Portfolio / Work */}
-        <div id="work">
-          <PortfolioCarousel onAtlasClick={() => setIsAtlasOpen(true)} />
-        </div>
+        {/* Projects */}
+        <section id="projects" className="py-24 bg-black">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+                Projects
+              </h2>
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                Work we're proud of. Every project here represents a partnership with people building something they believe in
+              </p>
+            </div>
+            <NewClientsCardStack onAtlasClick={() => setIsAtlasOpen(true)} />
+          </div>
+        </section>
 
         {/* Timeline / Process */}
         <div id="process">
           <HeroTimeline />
         </div>
-
-        {/* Testimonials & Case Studies */}
-        <TestimonialsSection />
 
         {/* About Haestus */}
         <div id="about">
