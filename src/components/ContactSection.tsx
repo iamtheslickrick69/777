@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, Mail, Calendar, ArrowRight, Check, Loader2 } from 'lucide-react';
+import { Calendar, ArrowRight, Check, Loader2 } from 'lucide-react';
 
 const projectTypes = [
   { id: 'webapp', label: 'Web App', time: '72 hours' },

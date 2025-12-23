@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Github, Figma, Slack, Terminal, Layers } from 'lucide-react';
+import { ChevronRight, Github, Figma, Layers } from 'lucide-react';
 const integrations = [{
   title: 'Powerful git workflows',
   desc: 'Automate pull requests and commit workflows',

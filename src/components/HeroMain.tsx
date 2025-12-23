@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Check, Globe, Database, Smartphone, Bot, X } from 'lucide-react';
 import { BeforeAfterSlider } from './BeforeAfterSlider';
+import { MagneticButton } from './MagneticButton';
 
 const oldWay = [
   '6-month discovery phases',
@@ -59,6 +60,17 @@ const services = [
 export function HeroMain() {
   const [activeTab, setActiveTab] = useState<'old' | 'new'>('new');
   const [showMoreServices, setShowMoreServices] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Scroll-linked parallax effects
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [1, 0.8, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
 
   const scrollToWork = () => {
     const workSection = document.getElementById('work');
@@ -75,44 +87,49 @@ export function HeroMain() {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center py-16 overflow-hidden">
-      {/* Subtle background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none" />
+    <section ref={sectionRef} className="relative min-h-screen flex flex-col items-center justify-center py-24 overflow-hidden">
+      {/* Subtle background glow with parallax */}
+      <motion.div
+        style={{ y, opacity }}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-white/[0.02] blur-[120px] rounded-full pointer-events-none"
+      />
 
-      <div className="container mx-auto px-6 z-10">
-        {/* Logo + Badge - Centered */}
+      {/* Logo + Badge - Absolutely Centered */}
+      <motion.div
+        style={{ scale, opacity }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="absolute top-36 left-0 right-0 flex items-center justify-center gap-6 z-10 px-6"
+      >
+        <motion.img
+          src="/biglogo.png"
+          alt="Haestus"
+          className="h-16 md:h-20 w-auto"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        />
         <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center justify-center gap-6 mb-28 -mt-16"
+          className="w-px h-12 bg-white/30"
+          initial={{ scaleY: 0, opacity: 0 }}
+          animate={{ scaleY: 1, opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        />
+        <motion.div
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.5 }}
+          className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full border border-[#0cc0df]/30 bg-[#0cc0df]/5"
         >
-          <motion.img
-            src="/biglogo.png"
-            alt="Haestus"
-            className="h-20 md:h-24 w-auto"
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          />
-          <motion.div
-            className="w-px h-12 bg-white/30"
-            initial={{ scaleY: 0, opacity: 0 }}
-            animate={{ scaleY: 1, opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.3 }}
-          />
-          <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.5 }}
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-full border border-[#0cc0df]/30 bg-[#0cc0df]/5"
-          >
-            <span className="text-lg md:text-xl font-medium text-[#0cc0df]">#1 AI Implementation</span>
-          </motion.div>
+          <span className="text-base md:text-lg font-medium text-[#0cc0df]">#1 AI Implementation</span>
         </motion.div>
+      </motion.div>
+
+      <motion.div style={{ scale, opacity }} className="container mx-auto px-6 z-10 pt-56">{/* Add top padding to account for absolute logo */}
 
         {/* Main Content - Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start max-w-6xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start max-w-6xl mx-auto w-full">
           {/* LEFT SIDE - Messaging */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -122,16 +139,16 @@ export function HeroMain() {
           >
             <div>
               {/* Headline */}
-              <h1 className="text-4xl md:text-[2.8rem] lg:text-[3.4rem] font-medium tracking-tight text-white mb-4 whitespace-nowrap">
+              <h1 className="text-4xl md:text-[2.6rem] lg:text-[3.2rem] font-medium tracking-tight text-white mb-6 whitespace-nowrap">
                 The Age of Execution.
               </h1>
-              <p className="text-xl text-gray-500 italic mb-12">
+              <p className="text-xl text-gray-500 italic mb-16">
                 show, don't tell
               </p>
 
               {/* Old vs New Toggle */}
-              <div className="mb-8 flex flex-col items-center">
-                <div className="inline-flex items-center p-1.5 rounded-xl bg-white/5 border border-white/10 mb-8">
+              <div className="mb-12 flex flex-col items-center">
+                <div className="inline-flex items-center p-1.5 rounded-xl bg-white/5 border border-white/10 mb-10">
                   <button
                     onClick={() => setActiveTab('old')}
                     className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
@@ -246,18 +263,20 @@ export function HeroMain() {
 
             {/* CTA Buttons */}
             <div className="flex gap-4 max-w-2xl mx-auto">
-              <button
+              <MagneticButton
                 onClick={scrollToWork}
                 className="flex-1 px-6 py-3 rounded-lg border border-[#404040] text-white text-sm font-medium hover:bg-white/10 hover:border-white/20 transition-colors"
+                strength={0.2}
               >
                 See Our Work
-              </button>
-              <button
+              </MagneticButton>
+              <MagneticButton
                 onClick={scrollToContact}
                 className="flex-1 px-6 py-3 rounded-lg bg-white text-black text-sm font-medium hover:bg-gray-100 transition-colors"
+                strength={0.3}
               >
                 Connect
-              </button>
+              </MagneticButton>
             </div>
 
             {/* Data & Mobile Modal */}
@@ -338,7 +357,7 @@ export function HeroMain() {
         <div className="mt-12 flex justify-center">
           <BeforeAfterSlider />
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

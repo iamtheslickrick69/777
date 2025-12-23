@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react"
+import { useRef, useMemo, useState } from "react"
 import { useFrame, type ThreeEvent } from "@react-three/fiber"
 import { useTexture } from "@react-three/drei"
 import * as THREE from "three"
@@ -80,14 +80,18 @@ export function ParticleSphere({ onProjectClick }: ParticleSphereProps = {}) {
     return geometry
   }, [IMAGE_SIZE, CORNER_RADIUS])
 
-  const particles = useMemo(() => {
+  const [particles] = useState(() => {
     const particles = []
-
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       const phi = Math.acos(-1 + (2 * i) / PARTICLE_COUNT)
       const theta = Math.sqrt(PARTICLE_COUNT * Math.PI) * phi
 
-      const radiusVariation = SPHERE_RADIUS + (Math.random() - 0.5) * POSITION_RANDOMNESS
+      const random1 = Math.random()
+      const random2 = Math.random()
+      const random3 = Math.random()
+      const random4 = Math.random()
+
+      const radiusVariation = SPHERE_RADIUS + (random1 - 0.5) * POSITION_RANDOMNESS
 
       const x = radiusVariation * Math.cos(theta) * Math.sin(phi)
       const y = radiusVariation * Math.cos(phi)
@@ -95,14 +99,13 @@ export function ParticleSphere({ onProjectClick }: ParticleSphereProps = {}) {
 
       particles.push({
         position: [x, y, z],
-        scale: Math.random() * (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN) + PARTICLE_SIZE_MIN,
-        color: new THREE.Color().setHSL(Math.random() * 0.1 + 0.5, 0.9, 0.5 + Math.random() * 0.3),
-        rotationSpeed: (Math.random() - 0.5) * 0.01,
+        scale: random2 * (PARTICLE_SIZE_MAX - PARTICLE_SIZE_MIN) + PARTICLE_SIZE_MIN,
+        color: new THREE.Color().setHSL(random3 * 0.1 + 0.5, 0.9, 0.5 + random4 * 0.3),
+        rotationSpeed: (random1 - 0.5) * 0.01,
       })
     }
-
     return particles
-  }, [PARTICLE_COUNT, SPHERE_RADIUS, POSITION_RANDOMNESS, PARTICLE_SIZE_MIN, PARTICLE_SIZE_MAX])
+  })
 
   const orbitingImages = useMemo(() => {
     const images = []
@@ -135,7 +138,7 @@ export function ParticleSphere({ onProjectClick }: ParticleSphereProps = {}) {
     return images
   }, [IMAGE_COUNT, SPHERE_RADIUS, textures.length])
 
-  useFrame((state) => {
+  useFrame(() => {
     if (groupRef.current) {
       groupRef.current.rotation.y += ROTATION_SPEED_Y
       groupRef.current.rotation.x += ROTATION_SPEED_X

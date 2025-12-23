@@ -17,6 +17,13 @@ const features = [{
   desc: 'Built for teams of all sizes. From early-stage startups to global enterprises.',
   icon: <Server size={20} />
 }];
+
+// Generate particle animations once at module load
+const particleAnimations = Array.from({ length: 5 }, () => ({
+  x: Math.random() * 100 - 50,
+  y: Math.random() * 100 - 50
+}));
+
 export function TechnicalSection() {
   const [activeFeature, setActiveFeature] = useState('sync');
   return <section className="py-32 bg-black relative">
@@ -144,9 +151,9 @@ export function TechnicalSection() {
                     <Database size={48} className="text-blue-400" />
                   </div>
                   {/* Floating particles */}
-                  {[...Array(5)].map((_, i) => <motion.div key={i} className="absolute w-2 h-2 bg-blue-400 rounded-full" animate={{
-                x: [0, Math.random() * 100 - 50],
-                y: [0, Math.random() * 100 - 50],
+                  {particleAnimations.map((particle, i) => <motion.div key={i} className="absolute w-2 h-2 bg-blue-400 rounded-full" animate={{
+                x: [0, particle.x],
+                y: [0, particle.y],
                 opacity: [1, 0]
               }} transition={{
                 duration: 2,

@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { staggerContainer, staggerItem } from '../lib/animations';
 
 const industries = [
   {
@@ -85,9 +86,9 @@ export function CompaniesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-4 text-white">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight mb-6 text-white">
             Trusted Across Industries
           </h2>
           <p className="text-xl text-gray-400">
@@ -96,14 +97,18 @@ export function CompaniesSection() {
         </motion.div>
 
         {/* Industries Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8">
-          {industries.map((industry, i) => (
+        <motion.div
+          variants={staggerContainer}
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true }}
+          className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-8 md:gap-10"
+        >
+          {industries.map((industry) => (
             <motion.div
               key={industry.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              variants={staggerItem}
+              whileHover={{ scale: 1.05, y: -5 }}
               className="group flex flex-col items-center text-center"
             >
               <div className="w-16 h-16 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center mb-4 text-white/70 group-hover:text-white group-hover:border-white/20 group-hover:bg-white/10 transition-all duration-300 group-hover:scale-110">
@@ -114,7 +119,7 @@ export function CompaniesSection() {
               </span>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

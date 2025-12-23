@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowUpRight } from 'lucide-react';
 
+interface TimelineItem {
+  step?: string;
+  week?: string;
+  desc: string;
+}
+
 const WebAppIllustration = () => (
   <div className="relative w-full h-36 flex items-center justify-center">
     {/* Backdrop glow - stronger cyan */}
@@ -409,7 +415,7 @@ export function SolutionsSection() {
   const [selectedFeature, setSelectedFeature] = useState<number | null>(null);
 
   return (
-    <section className="py-24 bg-black">
+    <section className="py-32 bg-black">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -561,7 +567,7 @@ export function SolutionsSection() {
                       {feature.fullContent.timeline && (
                         <div className="bg-[#0d0d0d]/50 rounded-lg p-3 border border-white/5">
                           <div className="space-y-2">
-                            {feature.fullContent.timeline.map((item: any, idx: number) => (
+                            {feature.fullContent.timeline.map((item: TimelineItem, idx: number) => (
                               <div key={idx} className="flex items-start gap-3">
                                 <span className={`text-xs font-semibold ${getAccentColorClasses(feature.accentColor || 'white')} text-black px-2 py-0.5 rounded`}>
                                   {item.step || item.week}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X, Eye } from 'lucide-react';
 
@@ -7,7 +7,14 @@ export function BeforeAfterSlider() {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isLocked, setIsLocked] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [containerWidth, setContainerWidth] = useState(100);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
+    }
+  }, [isOpen]);
 
   const handleMove = (clientX: number) => {
     if (!containerRef.current) return;
@@ -121,7 +128,7 @@ export function BeforeAfterSlider() {
                     src="/before.png"
                     alt="Before"
                     className="absolute inset-0 h-full object-contain bg-black"
-                    style={{ width: `${containerRef.current?.offsetWidth || 100}px`, maxWidth: 'none' }}
+                    style={{ width: `${containerWidth}px`, maxWidth: 'none' }}
                     draggable={false}
                   />
                 </div>

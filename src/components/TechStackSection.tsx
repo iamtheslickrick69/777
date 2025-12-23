@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Shield, Cpu, Cloud, Code, Layers, ArrowRight } from 'lucide-react';
+import { Zap, Shield, Cpu, Cloud, Code, Layers } from 'lucide-react';
 
 const techCategories = [
   {

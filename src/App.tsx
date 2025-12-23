@@ -11,6 +11,7 @@ import { AtlasModal } from './components/AtlasModal';
 import { BlogCardStack } from './components/BlogCardStack';
 import { NewClientsCardStack } from './components/NewClientsCardStack';
 import { AboutSection } from './components/AboutSection';
+import { ScrollReveal } from './components/ScrollReveal';
 import { usePreloadImages } from './hooks/usePreloadImages';
 
 // Preload all Atlas images
@@ -29,7 +30,7 @@ function App() {
   const [isAtlasOpen, setIsAtlasOpen] = useState(false);
 
   // Preload images on app mount
-  const imagesLoaded = usePreloadImages(ATLAS_IMAGES);
+  usePreloadImages(ATLAS_IMAGES);
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-purple-500/30">
@@ -49,16 +50,18 @@ function App() {
         <CompaniesSection />
 
         {/* Projects */}
-        <section id="projects" className="py-24 bg-black">
+        <section id="projects" className="py-32 bg-black">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-                Projects
-              </h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Work we're proud of. Every project here represents a partnership with people building something they believe in
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+                  Projects
+                </h2>
+                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                  Work we're proud of. Every project here represents a partnership with people building something they believe in
+                </p>
+              </div>
+            </ScrollReveal>
             <NewClientsCardStack onAtlasClick={() => setIsAtlasOpen(true)} />
           </div>
         </section>
@@ -74,16 +77,18 @@ function App() {
         </div>
 
         {/* Blog Articles */}
-        <section id="blog" className="py-24 bg-black">
+        <section id="blog" className="py-32 bg-black">
           <div className="container mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-                Latest Insights
-              </h2>
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Strategic thinking on AI, payments, and building competitive advantage
-              </p>
-            </div>
+            <ScrollReveal>
+              <div className="text-center mb-20">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+                  Latest Insights
+                </h2>
+                <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                  Strategic thinking on AI, payments, and building competitive advantage
+                </p>
+              </div>
+            </ScrollReveal>
             <BlogCardStack />
           </div>
         </section>
@@ -97,7 +102,7 @@ function App() {
         </div>
       </main>
 
-      <footer className="py-12 border-t border-white/5 bg-black">
+      <footer className="py-16 border-t border-white/5 bg-black">
         <div className="container mx-auto px-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">

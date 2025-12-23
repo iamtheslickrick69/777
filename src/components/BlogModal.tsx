@@ -18,7 +18,6 @@ export function BlogModal({ isOpen, onClose, title, content, category, readTime 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
-      setScrollProgress(0)
     } else {
       document.body.style.overflow = "unset"
     }

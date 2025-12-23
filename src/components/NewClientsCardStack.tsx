@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight, Archive, Menu, Folder } from "lucide-react"
 import { ClientProjectModal } from "./ClientProjectModal"
@@ -97,12 +97,10 @@ function CardContent({
 function AnimatedCard({
   card,
   index,
-  isAnimating,
   onReadClick,
 }: {
   card: Card
   index: number
-  isAnimating: boolean
   onReadClick: () => void
 }) {
   const { scale, y } = positionStyles[index] ?? positionStyles[2]
@@ -154,7 +152,7 @@ export function NewClientsCardStack({ onAtlasClick }: NewClientsCardStackProps =
 
   const currentIndex = cards[0].contentType % clientProjects.length
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (isAnimating) return
     setIsAnimating(true)
     const prevContentType = currentIndex === 0 ? clientProjects.length - 1 : currentIndex - 1
@@ -165,9 +163,9 @@ export function NewClientsCardStack({ onAtlasClick }: NewClientsCardStackProps =
     }, 0)
 
     setTimeout(() => setIsAnimating(false), 450)
-  }
+  }, [isAnimating, currentIndex, cards, nextId])
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (isAnimating) return
     setIsAnimating(true)
     const nextContentType = (cards[2].contentType + 1) % clientProjects.length
@@ -178,7 +176,7 @@ export function NewClientsCardStack({ onAtlasClick }: NewClientsCardStackProps =
     }, 0)
 
     setTimeout(() => setIsAnimating(false), 450)
-  }
+  }, [isAnimating, cards, nextId])
 
   const handleReadClick = (contentType: number) => {
     setSelectedProject(clientProjects[contentType % clientProjects.length])
@@ -294,7 +292,6 @@ export function NewClientsCardStack({ onAtlasClick }: NewClientsCardStackProps =
                       key={card.id}
                       card={card}
                       index={index}
-                      isAnimating={isAnimating}
                       onReadClick={() => handleReadClick(card.contentType)}
                     />
                   ))}

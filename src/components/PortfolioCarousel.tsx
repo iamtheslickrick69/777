@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Archive, Menu, ChevronRight, ExternalLink, ChevronLeft, Folder } from 'lucide-react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { Archive, Menu, ChevronRight, ChevronLeft, Folder } from 'lucide-react'
 import { ProjectModal } from './ProjectModal'
 import { projects } from '../data/projects'
 
@@ -234,7 +234,6 @@ export function PortfolioCarousel({ onAtlasClick }: PortfolioCarouselProps = {})
   const [viewMode, setViewMode] = useState<'stack' | 'list'>('stack')
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const [isHoveringCards, setIsHoveringCards] = useState(false)
   const [selectedProjectIndex, setSelectedProjectIndex] = useState<number | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const cardsAreaRef = useRef<HTMLDivElement>(null)
@@ -242,7 +241,7 @@ export function PortfolioCarousel({ onAtlasClick }: PortfolioCarouselProps = {})
   // Filter visible cards
   const visibleCards = cards.filter((c) => c.visible)
 
-  const handleScroll = (e: WheelEvent) => {
+  const handleScroll = useCallback((e: WheelEvent) => {
     if (viewMode !== 'stack') return
     e.preventDefault()
 
@@ -263,7 +262,7 @@ export function PortfolioCarousel({ onAtlasClick }: PortfolioCarouselProps = {})
 
       return newPosition
     })
-  }
+  }, [viewMode, visibleCards.length])
 
   useEffect(() => {
     const cardsArea = cardsAreaRef.current
@@ -271,11 +270,7 @@ export function PortfolioCarousel({ onAtlasClick }: PortfolioCarouselProps = {})
       cardsArea.addEventListener('wheel', handleScroll, { passive: false })
       return () => cardsArea.removeEventListener('wheel', handleScroll)
     }
-  }, [viewMode, visibleCards.length])
-
-  const handleTimelineClick = (index: number) => {
-    setPosition(index)
-  }
+  }, [viewMode, visibleCards.length, handleScroll])
 
   const handleMouseMove = (e: React.MouseEvent) => {
     setMousePos({ x: e.clientX, y: e.clientY })
